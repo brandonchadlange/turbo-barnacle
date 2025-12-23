@@ -1,0 +1,1881 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlexiStack | Plan Your Day</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #08090c;
+            --bg-secondary: #0f1014;
+            --bg-tertiary: #161820;
+            --bg-card: #12141a;
+            --bg-hover: #1a1d26;
+            --bg-timeline: #0c0d10;
+            --text-primary: #eef0f6;
+            --text-secondary: #7d8499;
+            --text-muted: #4a5066;
+            --accent-racing: #ff4d6a;
+            --accent-dining: #ffb340;
+            --accent-padel: #00e5b0;
+            --accent-golf: #6b9fff;
+            --accent-primary: #00e5b0;
+            --border: #1e212d;
+            --border-light: #2a2f3d;
+            --timeline-line: #252836;
+            --gradient-racing: linear-gradient(135deg, #ff4d6a 0%, #ff7a8f 100%);
+            --gradient-dining: linear-gradient(135deg, #ffb340 0%, #ffc966 100%);
+            --gradient-padel: linear-gradient(135deg, #00e5b0 0%, #40f0c8 100%);
+            --gradient-golf: linear-gradient(135deg, #6b9fff 0%, #99baff 100%);
+            --shadow-glow: 0 0 60px rgba(0, 229, 176, 0.15);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Geometric Background Pattern */
+        .bg-pattern {
+            position: fixed;
+            inset: 0;
+            background:
+                linear-gradient(135deg, rgba(0, 229, 176, 0.03) 0%, transparent 50%),
+                linear-gradient(225deg, rgba(107, 159, 255, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .bg-pattern::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(circle at 2px 2px, var(--border) 1px, transparent 0);
+            background-size: 48px 48px;
+            opacity: 0.3;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (max-width: 1024px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Main Content Area */
+        .main-content {
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 48px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo-mark {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-padel);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--bg-primary);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .logo-text {
+            font-size: 26px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text span {
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .date-selector {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+        }
+
+        .date-nav-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .date-nav-btn:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .current-date {
+            min-width: 160px;
+            text-align: center;
+        }
+
+        .current-date-day {
+            font-size: 14px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .current-date-full {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        /* Hero */
+        .hero {
+            margin-bottom: 48px;
+        }
+
+        .hero h1 {
+            font-size: clamp(32px, 5vw, 48px);
+            font-weight: 700;
+            letter-spacing: -1px;
+            line-height: 1.15;
+            margin-bottom: 12px;
+        }
+
+        .hero p {
+            font-size: 17px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            max-width: 500px;
+        }
+
+        /* Timeline */
+        .timeline-container {
+            flex: 1;
+            position: relative;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 80px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 32px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--timeline-line);
+        }
+
+        .timeline-empty {
+            text-align: center;
+            padding: 80px 40px;
+            background: var(--bg-secondary);
+            border: 2px dashed var(--border);
+            border-radius: var(--radius-xl);
+            margin-left: -80px;
+        }
+
+        .timeline-empty-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--bg-tertiary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            margin: 0 auto 24px;
+        }
+
+        .timeline-empty h3 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .timeline-empty p {
+            color: var(--text-secondary);
+            margin-bottom: 28px;
+        }
+
+        /* Timeline Item */
+        .timeline-item {
+            position: relative;
+            margin-bottom: 24px;
+            animation: slideInLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .timeline-time {
+            position: absolute;
+            left: -80px;
+            top: 20px;
+            width: 64px;
+            text-align: right;
+        }
+
+        .timeline-time-start {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .timeline-time-end {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -56px;
+            top: 22px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 3px solid var(--bg-primary);
+        }
+
+        .timeline-item.racing .timeline-dot {
+            background: var(--accent-racing);
+            box-shadow: 0 0 12px var(--accent-racing);
+        }
+
+        .timeline-item.dining .timeline-dot {
+            background: var(--accent-dining);
+            box-shadow: 0 0 12px var(--accent-dining);
+        }
+
+        .timeline-item.padel .timeline-dot {
+            background: var(--accent-padel);
+            box-shadow: 0 0 12px var(--accent-padel);
+        }
+
+        .timeline-item.golf .timeline-dot {
+            background: var(--accent-golf);
+            box-shadow: 0 0 12px var(--accent-golf);
+        }
+
+        .timeline-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-card:hover {
+            border-color: var(--border-light);
+            transform: translateX(4px);
+        }
+
+        .timeline-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+        }
+
+        .timeline-item.racing .timeline-card::before {
+            background: var(--gradient-racing);
+        }
+
+        .timeline-item.dining .timeline-card::before {
+            background: var(--gradient-dining);
+        }
+
+        .timeline-item.padel .timeline-card::before {
+            background: var(--gradient-padel);
+        }
+
+        .timeline-item.golf .timeline-card::before {
+            background: var(--gradient-golf);
+        }
+
+        .timeline-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .timeline-card-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .timeline-card-name {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+
+        .timeline-card-remove {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .timeline-card-remove:hover {
+            background: rgba(255, 77, 106, 0.1);
+            color: var(--accent-racing);
+        }
+
+        .timeline-card-details {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .timeline-card-detail {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .timeline-card-price {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .timeline-item.racing .timeline-card-price {
+            color: var(--accent-racing);
+        }
+
+        .timeline-item.dining .timeline-card-price {
+            color: var(--accent-dining);
+        }
+
+        .timeline-item.padel .timeline-card-price {
+            color: var(--accent-padel);
+        }
+
+        .timeline-item.golf .timeline-card-price {
+            color: var(--accent-golf);
+        }
+
+        /* Add Activity Button */
+        .add-activity-wrapper {
+            position: relative;
+            margin-top: 12px;
+        }
+
+        .add-activity-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            padding: 20px;
+            background: var(--bg-secondary);
+            border: 2px dashed var(--border);
+            border-radius: var(--radius-lg);
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: -80px;
+            width: calc(100% + 80px);
+        }
+
+        .add-activity-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: rgba(0, 229, 176, 0.05);
+        }
+
+        .add-activity-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .next-available {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            padding: 4px 10px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-sm);
+            color: var(--accent-primary);
+        }
+
+        /* Sidebar - Summary */
+        .sidebar {
+            background: var(--bg-secondary);
+            border-left: 1px solid var(--border);
+            padding: 40px 32px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                right: 0;
+                width: 100%;
+                max-width: 420px;
+                height: 100vh;
+                transform: translateX(100%);
+                transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: 1000;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+        }
+
+        .sidebar-header {
+            margin-bottom: 32px;
+        }
+
+        .sidebar-title {
+            font-size: 13px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .sidebar-date {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        /* Day Overview */
+        .day-overview {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .overview-stat {
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            padding: 20px;
+        }
+
+        .overview-stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .overview-stat-label {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* Mini Timeline */
+        .mini-timeline {
+            flex: 1;
+            margin-bottom: 32px;
+        }
+
+        .mini-timeline-header {
+            font-size: 13px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .mini-timeline-track {
+            position: relative;
+            height: 8px;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .mini-timeline-segment {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        .mini-timeline-segment.racing {
+            background: var(--accent-racing);
+        }
+
+        .mini-timeline-segment.dining {
+            background: var(--accent-dining);
+        }
+
+        .mini-timeline-segment.padel {
+            background: var(--accent-padel);
+        }
+
+        .mini-timeline-segment.golf {
+            background: var(--accent-golf);
+        }
+
+        .mini-timeline-hours {
+            display: flex;
+            justify-content: space-between;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* Activity Legend */
+        .activity-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.racing {
+            background: var(--accent-racing);
+        }
+
+        .legend-dot.dining {
+            background: var(--accent-dining);
+        }
+
+        .legend-dot.padel {
+            background: var(--accent-padel);
+        }
+
+        .legend-dot.golf {
+            background: var(--accent-golf);
+        }
+
+        /* Checkout Area */
+        .checkout-area {
+            border-top: 1px solid var(--border);
+            padding-top: 24px;
+        }
+
+        .checkout-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .checkout-row.total {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .checkout-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .checkout-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+        }
+
+        .checkout-total {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 32px;
+            font-weight: 600;
+        }
+
+        .btn-checkout {
+            width: 100%;
+            margin-top: 24px;
+            padding: 18px 24px;
+            background: var(--gradient-padel);
+            border: none;
+            border-radius: var(--radius-md);
+            color: var(--bg-primary);
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-checkout:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(0, 229, 176, 0.3);
+        }
+
+        .btn-checkout:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* Activity Selection Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            width: 100%;
+            max-width: 640px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.95) translateY(20px);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-header {
+            padding: 28px 28px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .modal-title {
+            font-size: 26px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .modal-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .modal-close {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: var(--bg-tertiary);
+            border-radius: 50%;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 28px;
+        }
+
+        /* Step Indicator */
+        .step-indicator {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 28px;
+        }
+
+        .step {
+            flex: 1;
+            height: 4px;
+            background: var(--bg-tertiary);
+            border-radius: 2px;
+            transition: background 0.3s ease;
+        }
+
+        .step.active {
+            background: var(--accent-primary);
+        }
+
+        .step.completed {
+            background: var(--accent-primary);
+        }
+
+        /* Activity Selection Grid */
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .activity-option {
+            background: var(--bg-tertiary);
+            border: 2px solid transparent;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .activity-option:hover {
+            border-color: var(--border-light);
+            transform: translateY(-2px);
+        }
+
+        .activity-option.selected {
+            border-color: var(--accent-primary);
+            background: rgba(0, 229, 176, 0.05);
+        }
+
+        .activity-option-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+
+        .activity-option-name {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .activity-option-price {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* Time Filter Notice */
+        .time-filter-notice {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: rgba(0, 229, 176, 0.08);
+            border: 1px solid rgba(0, 229, 176, 0.2);
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+        }
+
+        .time-filter-notice svg {
+            flex-shrink: 0;
+            color: var(--accent-primary);
+        }
+
+        .time-filter-notice p {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .time-filter-notice strong {
+            color: var(--accent-primary);
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 14px 18px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 15px;
+            transition: all 0.2s ease;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%237d8499' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 44px;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        /* Time Slots */
+        .time-slots-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+
+        .time-slot {
+            padding: 14px 8px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .time-slot:hover:not(.unavailable):not(.filtered) {
+            border-color: var(--border-light);
+            color: var(--text-primary);
+        }
+
+        .time-slot.selected {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: var(--bg-primary);
+        }
+
+        .time-slot.unavailable {
+            opacity: 0.25;
+            cursor: not-allowed;
+            text-decoration: line-through;
+        }
+
+        .time-slot.filtered {
+            opacity: 0.15;
+            cursor: not-allowed;
+            position: relative;
+        }
+
+        /* Guest Counter */
+        .guest-counter {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .counter-btn {
+            width: 48px;
+            height: 48px;
+            border: 1px solid var(--border);
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 22px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .counter-btn:hover {
+            background: var(--bg-hover);
+            border-color: var(--border-light);
+        }
+
+        .counter-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 28px;
+            font-weight: 500;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        /* Modal Footer */
+        .modal-footer {
+            padding: 0 28px 28px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px 24px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .btn-primary {
+            background: var(--gradient-padel);
+            color: var(--bg-primary);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 229, 176, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--border-light);
+        }
+
+        /* Mobile toggle */
+        .mobile-summary-toggle {
+            display: none;
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 16px 24px;
+            background: var(--gradient-padel);
+            border: none;
+            border-radius: var(--radius-lg);
+            color: var(--bg-primary);
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            z-index: 900;
+            box-shadow: 0 8px 32px rgba(0, 229, 176, 0.4);
+        }
+
+        @media (max-width: 1024px) {
+            .mobile-summary-toggle {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-pattern"></div>
+
+    <div class="app-container">
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <div class="logo">
+                    <div class="logo-mark">FS</div>
+                    <div class="logo-text">Flexi<span>Stack</span></div>
+                </div>
+                <div class="date-selector">
+                    <button class="date-nav-btn" onclick="changeDate(-1)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                    </button>
+                    <div class="current-date">
+                        <div class="current-date-day" id="currentDay">Monday</div>
+                        <div class="current-date-full" id="currentDate">December 23</div>
+                    </div>
+                    <button class="date-nav-btn" onclick="changeDate(1)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="hero">
+                <h1>Plan Your Day</h1>
+                <p>Build your perfect itinerary. Add activities sequentially and we'll help you schedule everything
+                    seamlessly.</p>
+            </div>
+
+            <div class="timeline-container">
+                <div class="timeline" id="timeline">
+                    <!-- Empty State -->
+                    <div class="timeline-empty" id="timelineEmpty">
+                        <div class="timeline-empty-icon">📅</div>
+                        <h3>Your day is empty</h3>
+                        <p>Start by adding your first activity</p>
+                        <button class="btn btn-primary" onclick="openActivityModal()"
+                            style="margin-top: 8px; flex: none; padding: 14px 28px;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" style="display: inline; vertical-align: middle; margin-right: 8px;">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Add First Activity
+                        </button>
+                    </div>
+                </div>
+
+                <div class="add-activity-wrapper" id="addActivityWrapper" style="display: none;">
+                    <button class="add-activity-btn" onclick="openActivityModal()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Add Another Activity
+                        <span class="next-available" id="nextAvailable">After 10:00</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">Day Summary</div>
+                <div class="sidebar-date" id="sidebarDate">Mon, Dec 23</div>
+            </div>
+
+            <div class="day-overview">
+                <div class="overview-stat">
+                    <div class="overview-stat-value" id="activityCount">0</div>
+                    <div class="overview-stat-label">Activities</div>
+                </div>
+                <div class="overview-stat">
+                    <div class="overview-stat-value" id="totalDuration">0h</div>
+                    <div class="overview-stat-label">Total Duration</div>
+                </div>
+            </div>
+
+            <div class="mini-timeline">
+                <div class="mini-timeline-header">Timeline View</div>
+                <div class="mini-timeline-track" id="miniTimelineTrack">
+                    <!-- Segments added dynamically -->
+                </div>
+                <div class="mini-timeline-hours">
+                    <span>9am</span>
+                    <span>12pm</span>
+                    <span>3pm</span>
+                    <span>6pm</span>
+                    <span>9pm</span>
+                </div>
+                <div class="activity-legend" id="activityLegend">
+                    <!-- Legend items added dynamically -->
+                </div>
+            </div>
+
+            <div class="checkout-area">
+                <div class="checkout-row">
+                    <span class="checkout-label">Subtotal</span>
+                    <span class="checkout-value" id="subtotal">£0.00</span>
+                </div>
+                <div class="checkout-row">
+                    <span class="checkout-label">Booking fee</span>
+                    <span class="checkout-value">£0.00</span>
+                </div>
+                <div class="checkout-row total">
+                    <span class="checkout-label">Total</span>
+                    <span class="checkout-total" id="totalPrice">£0</span>
+                </div>
+                <button class="btn-checkout" id="checkoutBtn" disabled onclick="checkout()">
+                    Complete Booking
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Summary Toggle -->
+    <button class="mobile-summary-toggle" onclick="toggleSidebar()">
+        <span id="mobileTotal">£0</span>
+        <span>View Summary</span>
+    </button>
+
+    <!-- Activity Selection Modal -->
+    <div class="modal-overlay" id="activityModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div>
+                    <h2 class="modal-title" id="modalTitle">Choose Activity</h2>
+                    <p class="modal-subtitle" id="modalSubtitle">Select what you'd like to do next</p>
+                </div>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="step-indicator">
+                    <div class="step active" id="step1"></div>
+                    <div class="step" id="step2"></div>
+                    <div class="step" id="step3"></div>
+                </div>
+
+                <!-- Step 1: Activity Selection -->
+                <div id="stepActivity">
+                    <div class="activity-grid">
+                        <div class="activity-option" data-activity="racing" onclick="selectActivity('racing')">
+                            <div class="activity-option-icon">🏎️</div>
+                            <div class="activity-option-name">Racing Sim</div>
+                            <div class="activity-option-price">From £35</div>
+                        </div>
+                        <div class="activity-option" data-activity="dining" onclick="selectActivity('dining')">
+                            <div class="activity-option-icon">🍽️</div>
+                            <div class="activity-option-name">Restaurant</div>
+                            <div class="activity-option-price">From £25</div>
+                        </div>
+                        <div class="activity-option" data-activity="padel" onclick="selectActivity('padel')">
+                            <div class="activity-option-icon">🎾</div>
+                            <div class="activity-option-name">Padel Court</div>
+                            <div class="activity-option-price">From £40</div>
+                        </div>
+                        <div class="activity-option" data-activity="golf" onclick="selectActivity('golf')">
+                            <div class="activity-option-icon">⛳</div>
+                            <div class="activity-option-name">Golf Sim</div>
+                            <div class="activity-option-price">From £45</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Time Selection -->
+                <div id="stepTime" style="display: none;">
+                    <div class="time-filter-notice" id="timeFilterNotice" style="display: none;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        <p>Showing times available <strong id="filterTimeText">after 10:00</strong> based on your
+                            previous bookings</p>
+                    </div>
+
+                    <div class="form-group" id="durationGroup">
+                        <label class="form-label">Session Duration</label>
+                        <select class="form-select" id="durationSelect" onchange="updatePrice()">
+                            <option value="30" data-price="35">30 minutes — £35</option>
+                            <option value="60" data-price="55">60 minutes — £55</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="guestsGroup" style="display: none;">
+                        <label class="form-label">Number of Guests</label>
+                        <div class="guest-counter">
+                            <button class="counter-btn" onclick="adjustGuests(-1)">−</button>
+                            <span class="counter-value" id="guestCount">4</span>
+                            <button class="counter-btn" onclick="adjustGuests(1)">+</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Select Time</label>
+                        <div class="time-slots-grid" id="timeSlotsGrid">
+                            <!-- Time slots added dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Confirm -->
+                <div id="stepConfirm" style="display: none;">
+                    <div class="form-group" id="extraOptionsGroup">
+                        <!-- Extra options based on activity type -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="modalBackBtn" onclick="previousStep()"
+                    style="display: none;">Back</button>
+                <button class="btn btn-primary" id="modalNextBtn" onclick="nextStep()" disabled>Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let currentDate = new Date();
+        let agenda = [];
+        let currentStep = 1;
+        let selectedActivity = null;
+        let selectedTime = null;
+        let selectedDuration = 30;
+        let guestCount = 4;
+
+        // Activity configurations
+        const activities = {
+            racing: {
+                name: 'Racing Simulator',
+                icon: '🏎️',
+                durations: [
+                    { value: 30, label: '30 minutes', price: 35 },
+                    { value: 60, label: '60 minutes', price: 55 }
+                ],
+                hasGuests: false,
+                startHour: 9,
+                endHour: 21,
+                slotInterval: 30
+            },
+            dining: {
+                name: 'Restaurant',
+                icon: '🍽️',
+                durations: [
+                    { value: 90, label: '90 minutes', price: 25 }
+                ],
+                hasGuests: true,
+                startHour: 12,
+                endHour: 22,
+                slotInterval: 30
+            },
+            padel: {
+                name: 'Padel Court',
+                icon: '🎾',
+                durations: [
+                    { value: 60, label: '60 minutes', price: 40 },
+                    { value: 90, label: '90 minutes', price: 55 }
+                ],
+                hasGuests: false,
+                startHour: 8,
+                endHour: 21,
+                slotInterval: 30
+            },
+            golf: {
+                name: 'Golf Simulator',
+                icon: '⛳',
+                durations: [
+                    { value: 60, label: '60 minutes', price: 45 },
+                    { value: 90, label: '90 minutes', price: 65 }
+                ],
+                hasGuests: false,
+                startHour: 9,
+                endHour: 22,
+                slotInterval: 30
+            }
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDateDisplay();
+        });
+
+        // Date Navigation
+        function changeDate(delta) {
+            currentDate.setDate(currentDate.getDate() + delta);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            if (currentDate < today) {
+                currentDate = new Date();
+            }
+            updateDateDisplay();
+            // Clear agenda when date changes
+            agenda = [];
+            renderAgenda();
+        }
+
+        function updateDateDisplay() {
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+            document.getElementById('currentDay').textContent = days[currentDate.getDay()];
+            document.getElementById('currentDate').textContent = `${months[currentDate.getMonth()]} ${currentDate.getDate()}`;
+            document.getElementById('sidebarDate').textContent = `${days[currentDate.getDay()].slice(0, 3)}, ${months[currentDate.getMonth()].slice(0, 3)} ${currentDate.getDate()}`;
+        }
+
+        // Get the earliest available time for next booking
+        function getEarliestAvailableTime() {
+            if (agenda.length === 0) {
+                return null;
+            }
+
+            // Sort agenda by end time and get the latest end time
+            const sortedAgenda = [...agenda].sort((a, b) => {
+                const endA = timeToMinutes(a.time) + a.durationMinutes;
+                const endB = timeToMinutes(b.time) + b.durationMinutes;
+                return endB - endA;
+            });
+
+            const lastItem = sortedAgenda[0];
+            const endMinutes = timeToMinutes(lastItem.time) + lastItem.durationMinutes;
+            return minutesToTime(endMinutes);
+        }
+
+        function timeToMinutes(time) {
+            const [hours, minutes] = time.split(':').map(Number);
+            return hours * 60 + minutes;
+        }
+
+        function minutesToTime(minutes) {
+            const hours = Math.floor(minutes / 60);
+            const mins = minutes % 60;
+            return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+        }
+
+        // Modal Functions
+        function openActivityModal() {
+            currentStep = 1;
+            selectedActivity = null;
+            selectedTime = null;
+
+            updateModalStep();
+            document.getElementById('activityModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            // Reset activity selections
+            document.querySelectorAll('.activity-option').forEach(el => el.classList.remove('selected'));
+        }
+
+        function closeModal() {
+            document.getElementById('activityModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function selectActivity(activity) {
+            selectedActivity = activity;
+            document.querySelectorAll('.activity-option').forEach(el => el.classList.remove('selected'));
+            document.querySelector(`[data-activity="${activity}"]`).classList.add('selected');
+            document.getElementById('modalNextBtn').disabled = false;
+        }
+
+        function updateModalStep() {
+            // Update step indicators
+            document.getElementById('step1').className = `step ${currentStep >= 1 ? 'active' : ''}`;
+            document.getElementById('step2').className = `step ${currentStep >= 2 ? 'active' : ''}`;
+            document.getElementById('step3').className = `step ${currentStep >= 3 ? 'active' : ''}`;
+
+            // Show/hide steps
+            document.getElementById('stepActivity').style.display = currentStep === 1 ? 'block' : 'none';
+            document.getElementById('stepTime').style.display = currentStep === 2 ? 'block' : 'none';
+            document.getElementById('stepConfirm').style.display = currentStep === 3 ? 'block' : 'none';
+
+            // Update back button
+            document.getElementById('modalBackBtn').style.display = currentStep > 1 ? 'block' : 'none';
+
+            // Update next button
+            const nextBtn = document.getElementById('modalNextBtn');
+            if (currentStep === 3) {
+                nextBtn.textContent = 'Add to Itinerary';
+                nextBtn.disabled = false;
+            } else if (currentStep === 2) {
+                nextBtn.textContent = 'Continue';
+                nextBtn.disabled = !selectedTime;
+            } else {
+                nextBtn.textContent = 'Continue';
+                nextBtn.disabled = !selectedActivity;
+            }
+
+            // Update modal title
+            if (currentStep === 1) {
+                document.getElementById('modalTitle').textContent = 'Choose Activity';
+                document.getElementById('modalSubtitle').textContent = "Select what you'd like to do next";
+            } else if (currentStep === 2) {
+                const config = activities[selectedActivity];
+                document.getElementById('modalTitle').textContent = `Book ${config.name}`;
+                document.getElementById('modalSubtitle').textContent = 'Select duration and time slot';
+            } else {
+                document.getElementById('modalTitle').textContent = 'Confirm Details';
+                document.getElementById('modalSubtitle').textContent = 'Review and customize your booking';
+            }
+        }
+
+        function nextStep() {
+            if (currentStep === 1 && selectedActivity) {
+                currentStep = 2;
+                setupTimeStep();
+            } else if (currentStep === 2 && selectedTime) {
+                currentStep = 3;
+                setupConfirmStep();
+            } else if (currentStep === 3) {
+                addToAgenda();
+                closeModal();
+                return;
+            }
+            updateModalStep();
+        }
+
+        function previousStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateModalStep();
+            }
+        }
+
+        function setupTimeStep() {
+            const config = activities[selectedActivity];
+
+            // Update duration options
+            const durationGroup = document.getElementById('durationGroup');
+            const durationSelect = document.getElementById('durationSelect');
+
+            if (config.durations.length === 1) {
+                durationGroup.style.display = 'none';
+                selectedDuration = config.durations[0].value;
+            } else {
+                durationGroup.style.display = 'block';
+                durationSelect.innerHTML = config.durations.map(d =>
+                    `<option value="${d.value}" data-price="${d.price}">${d.label} — £${d.price}</option>`
+                ).join('');
+                selectedDuration = config.durations[0].value;
+            }
+
+            // Show/hide guests
+            document.getElementById('guestsGroup').style.display = config.hasGuests ? 'block' : 'none';
+
+            // Generate time slots
+            generateTimeSlots();
+        }
+
+        function generateTimeSlots() {
+            const config = activities[selectedActivity];
+            const earliestTime = getEarliestAvailableTime();
+            const earliestMinutes = earliestTime ? timeToMinutes(earliestTime) : 0;
+
+            // Show/hide filter notice
+            const filterNotice = document.getElementById('timeFilterNotice');
+            if (earliestTime) {
+                filterNotice.style.display = 'flex';
+                document.getElementById('filterTimeText').textContent = `after ${earliestTime}`;
+            } else {
+                filterNotice.style.display = 'none';
+            }
+
+            const slots = [];
+            for (let hour = config.startHour; hour < config.endHour; hour++) {
+                for (let min = 0; min < 60; min += config.slotInterval) {
+                    const time = `${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`;
+                    const timeMinutes = hour * 60 + min;
+
+                    // Check if slot is filtered (before last activity ends)
+                    const isFiltered = earliestMinutes > 0 && timeMinutes < earliestMinutes;
+
+                    // Simulate some random unavailability
+                    const isUnavailable = !isFiltered && Math.random() < 0.15;
+
+                    slots.push({ time, isFiltered, isUnavailable });
+                }
+            }
+
+            const container = document.getElementById('timeSlotsGrid');
+            container.innerHTML = slots.map(slot => {
+                let classes = 'time-slot';
+                if (slot.isFiltered) classes += ' filtered';
+                else if (slot.isUnavailable) classes += ' unavailable';
+
+                return `<button class="${classes}" 
+                        data-time="${slot.time}"
+                        onclick="${!slot.isFiltered && !slot.isUnavailable ? `selectTimeSlot('${slot.time}')` : ''}"
+                        ${slot.isFiltered || slot.isUnavailable ? 'disabled' : ''}>
+          ${slot.time}
+        </button>`;
+            }).join('');
+
+            selectedTime = null;
+        }
+
+        function selectTimeSlot(time) {
+            selectedTime = time;
+            document.querySelectorAll('.time-slot').forEach(el => el.classList.remove('selected'));
+            document.querySelector(`[data-time="${time}"]`).classList.add('selected');
+            document.getElementById('modalNextBtn').disabled = false;
+        }
+
+        function updatePrice() {
+            const durationSelect = document.getElementById('durationSelect');
+            selectedDuration = parseInt(durationSelect.value);
+        }
+
+        function adjustGuests(delta) {
+            guestCount = Math.max(1, Math.min(8, guestCount + delta));
+            document.getElementById('guestCount').textContent = guestCount;
+        }
+
+        function setupConfirmStep() {
+            const config = activities[selectedActivity];
+            const extraOptions = document.getElementById('extraOptionsGroup');
+
+            let html = '';
+
+            if (selectedActivity === 'padel') {
+                html = `
+          <label class="form-label">Select Court</label>
+          <select class="form-select" id="courtSelect">
+            <option value="1">Court 1 — Outdoor</option>
+            <option value="2">Court 2 — Outdoor</option>
+            <option value="3">Court 3 — Covered</option>
+          </select>
+        `;
+            } else if (selectedActivity === 'golf') {
+                html = `
+          <label class="form-label">Select Bay</label>
+          <select class="form-select" id="baySelect">
+            <option value="1">Bay 1 — Trackman 4</option>
+            <option value="2">Bay 2 — Trackman 4</option>
+            <option value="3">Bay 3 — Full Swing</option>
+          </select>
+        `;
+            } else if (selectedActivity === 'racing') {
+                html = `
+          <label class="form-label">Select Simulator</label>
+          <select class="form-select" id="simSelect">
+            <option value="1">Sim 1 — Formula Pro</option>
+            <option value="2">Sim 2 — GT Racing</option>
+            <option value="3">Sim 3 — Rally</option>
+          </select>
+        `;
+            } else if (selectedActivity === 'dining') {
+                html = `
+          <label class="form-label">Table Preference</label>
+          <select class="form-select" id="tableSelect">
+            <option value="any">No Preference</option>
+            <option value="window">Window Seat</option>
+            <option value="booth">Booth</option>
+            <option value="terrace">Terrace</option>
+          </select>
+        `;
+            }
+
+            extraOptions.innerHTML = html;
+        }
+
+        function addToAgenda() {
+            const config = activities[selectedActivity];
+            const durationConfig = config.durations.find(d => d.value === selectedDuration) || config.durations[0];
+
+            const booking = {
+                id: Date.now(),
+                activity: selectedActivity,
+                name: config.name,
+                icon: config.icon,
+                time: selectedTime,
+                durationMinutes: durationConfig.value,
+                price: durationConfig.price,
+                guests: config.hasGuests ? guestCount : null
+            };
+
+            // Add extra details based on activity
+            if (selectedActivity === 'padel') {
+                const courtSelect = document.getElementById('courtSelect');
+                booking.court = courtSelect.options[courtSelect.selectedIndex].text;
+            } else if (selectedActivity === 'golf') {
+                const baySelect = document.getElementById('baySelect');
+                booking.bay = baySelect.options[baySelect.selectedIndex].text;
+            } else if (selectedActivity === 'racing') {
+                const simSelect = document.getElementById('simSelect');
+                booking.simulator = simSelect.options[simSelect.selectedIndex].text;
+            } else if (selectedActivity === 'dining') {
+                const tableSelect = document.getElementById('tableSelect');
+                booking.table = tableSelect.options[tableSelect.selectedIndex].text;
+            }
+
+            agenda.push(booking);
+
+            // Sort agenda by time
+            agenda.sort((a, b) => timeToMinutes(a.time) - timeToMinutes(b.time));
+
+            renderAgenda();
+        }
+
+        function removeFromAgenda(id) {
+            agenda = agenda.filter(item => item.id !== id);
+            renderAgenda();
+        }
+
+        function renderAgenda() {
+            const timeline = document.getElementById('timeline');
+            const emptyState = document.getElementById('timelineEmpty');
+            const addWrapper = document.getElementById('addActivityWrapper');
+
+            // Clear existing items
+            timeline.querySelectorAll('.timeline-item').forEach(el => el.remove());
+
+            if (agenda.length === 0) {
+                emptyState.style.display = 'block';
+                addWrapper.style.display = 'none';
+            } else {
+                emptyState.style.display = 'none';
+                addWrapper.style.display = 'block';
+
+                // Update next available time
+                const nextTime = getEarliestAvailableTime();
+                document.getElementById('nextAvailable').textContent = `After ${nextTime}`;
+
+                // Render timeline items
+                agenda.forEach((item, index) => {
+                    const endMinutes = timeToMinutes(item.time) + item.durationMinutes;
+                    const endTime = minutesToTime(endMinutes);
+
+                    let detailsHTML = `<span class="timeline-card-detail">⏱️ ${item.durationMinutes} mins</span>`;
+                    if (item.guests) detailsHTML += `<span class="timeline-card-detail">👥 ${item.guests} guests</span>`;
+                    if (item.court) detailsHTML += `<span class="timeline-card-detail">🎾 ${item.court}</span>`;
+                    if (item.bay) detailsHTML += `<span class="timeline-card-detail">⛳ ${item.bay}</span>`;
+                    if (item.simulator) detailsHTML += `<span class="timeline-card-detail">🏎️ ${item.simulator}</span>`;
+                    if (item.table && item.table !== 'No Preference') detailsHTML += `<span class="timeline-card-detail">🪑 ${item.table}</span>`;
+
+                    const itemHTML = `
+            <div class="timeline-item ${item.activity}" style="animation-delay: ${index * 0.1}s">
+              <div class="timeline-time">
+                <div class="timeline-time-start">${item.time}</div>
+                <div class="timeline-time-end">→ ${endTime}</div>
+              </div>
+              <div class="timeline-dot"></div>
+              <div class="timeline-card">
+                <div class="timeline-card-header">
+                  <div>
+                    <div class="timeline-card-icon">${item.icon}</div>
+                    <div class="timeline-card-name">${item.name}</div>
+                  </div>
+                  <button class="timeline-card-remove" onclick="removeFromAgenda(${item.id})">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </button>
+                </div>
+                <div class="timeline-card-details">${detailsHTML}</div>
+                <div class="timeline-card-price">£${item.price.toFixed(2)}</div>
+              </div>
+            </div>
+          `;
+
+                    timeline.insertAdjacentHTML('beforeend', itemHTML);
+                });
+            }
+
+            updateSidebar();
+        }
+
+        function updateSidebar() {
+            // Activity count
+            document.getElementById('activityCount').textContent = agenda.length;
+
+            // Total duration
+            const totalMinutes = agenda.reduce((sum, item) => sum + item.durationMinutes, 0);
+            const hours = Math.floor(totalMinutes / 60);
+            const mins = totalMinutes % 60;
+            document.getElementById('totalDuration').textContent = mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
+
+            // Total price
+            const total = agenda.reduce((sum, item) => sum + item.price, 0);
+            document.getElementById('subtotal').textContent = `£${total.toFixed(2)}`;
+            document.getElementById('totalPrice').textContent = `£${total}`;
+            document.getElementById('mobileTotal').textContent = `£${total}`;
+
+            // Checkout button
+            document.getElementById('checkoutBtn').disabled = agenda.length === 0;
+
+            // Mini timeline
+            renderMiniTimeline();
+
+            // Legend
+            renderLegend();
+        }
+
+        function renderMiniTimeline() {
+            const track = document.getElementById('miniTimelineTrack');
+            track.innerHTML = '';
+
+            if (agenda.length === 0) return;
+
+            const dayStart = 9 * 60; // 9am in minutes
+            const dayEnd = 21 * 60; // 9pm in minutes
+            const dayLength = dayEnd - dayStart;
+
+            agenda.forEach(item => {
+                const startMinutes = timeToMinutes(item.time);
+                const endMinutes = startMinutes + item.durationMinutes;
+
+                const leftPercent = ((startMinutes - dayStart) / dayLength) * 100;
+                const widthPercent = (item.durationMinutes / dayLength) * 100;
+
+                const segment = document.createElement('div');
+                segment.className = `mini-timeline-segment ${item.activity}`;
+                segment.style.left = `${Math.max(0, leftPercent)}%`;
+                segment.style.width = `${Math.min(widthPercent, 100 - leftPercent)}%`;
+                track.appendChild(segment);
+            });
+        }
+
+        function renderLegend() {
+            const legend = document.getElementById('activityLegend');
+            const usedActivities = [...new Set(agenda.map(item => item.activity))];
+
+            if (usedActivities.length === 0) {
+                legend.innerHTML = '';
+                return;
+            }
+
+            legend.innerHTML = usedActivities.map(activity => `
+        <div class="legend-item">
+          <div class="legend-dot ${activity}"></div>
+          <span>${activities[activity].name}</span>
+        </div>
+      `).join('');
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        function checkout() {
+            if (agenda.length === 0) return;
+
+            const bookingData = {
+                date: currentDate.toISOString().split('T')[0],
+                bookings: agenda.map(item => ({
+                    activityType: item.activity,
+                    startTime: item.time,
+                    durationMinutes: item.durationMinutes,
+                    guests: item.guests,
+                    price: item.price,
+                    details: {
+                        court: item.court,
+                        bay: item.bay,
+                        simulator: item.simulator,
+                        table: item.table
+                    }
+                })),
+                totalAmount: agenda.reduce((sum, item) => sum + item.price, 0)
+            };
+
+            console.log('Booking submitted:', bookingData);
+
+            const summary = agenda.map(item => `• ${item.time} - ${item.name}`).join('\n');
+
+            alert(`🎉 Booking confirmed!\n\n${summary}\n\nTotal: £${bookingData.totalAmount.toFixed(2)}\n\nConfirmation sent to your email.`);
+
+            agenda = [];
+            renderAgenda();
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+
+</html>
