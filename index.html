@@ -80,16 +80,16 @@
         }
 
         .app-container {
-            display: grid;
-            grid-template-columns: 1fr 420px;
             min-height: 100vh;
             position: relative;
             z-index: 1;
+            margin-right: 420px;
+            /* Space for sidebar on desktop */
         }
 
         @media (max-width: 1024px) {
             .app-container {
-                grid-template-columns: 1fr;
+                margin-right: 0;
             }
         }
 
@@ -490,28 +490,35 @@
 
         /* Sidebar - Summary */
         .sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 420px;
+            height: 100vh;
+            height: 100dvh;
+            background-color: #0f1014;
             background: var(--bg-secondary);
             border-left: 1px solid var(--border);
             padding: 40px 32px;
             display: flex;
             flex-direction: column;
+            z-index: 1001;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         @media (max-width: 1024px) {
             .sidebar {
-                position: fixed;
-                top: 0;
-                right: 0;
                 width: 100%;
                 max-width: 420px;
-                height: 100vh;
-                transform: translateX(100%);
+                transform: translate3d(100%, 0, 0);
+                -webkit-transform: translate3d(100%, 0, 0);
                 transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-                z-index: 1000;
             }
 
             .sidebar.active {
-                transform: translateX(0);
+                transform: translate3d(0, 0, 0);
+                -webkit-transform: translate3d(0, 0, 0);
             }
         }
 
@@ -717,15 +724,17 @@
             position: fixed;
             inset: 0;
             background: rgba(0, 0, 0, 0.85);
+            -webkit-backdrop-filter: blur(12px);
             backdrop-filter: blur(12px);
-            z-index: 1000;
+            z-index: 1100;
+            /* Above sidebar */
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 24px;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.3s ease;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
         }
 
         .modal-overlay.active {
@@ -1503,12 +1512,19 @@
         .sidebar-backdrop {
             display: none;
             position: fixed;
-            inset: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            height: 100dvh;
             background: rgba(0, 0, 0, 0.6);
-            z-index: 999;
+            z-index: 1000;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.3s ease;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
         }
 
         @media (max-width: 1024px) {
@@ -1597,67 +1613,67 @@
                 </div>
             </div>
         </div>
-
-        <!-- Sidebar -->
-        <div class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <div>
-                    <div class="sidebar-title">Day Summary</div>
-                    <div class="sidebar-date" id="sidebarDate">Mon, Dec 23</div>
-                </div>
-                <button class="sidebar-close" onclick="toggleSidebar()">×</button>
-            </div>
-
-            <div class="day-overview">
-                <div class="overview-stat">
-                    <div class="overview-stat-value" id="activityCount">0</div>
-                    <div class="overview-stat-label">Activities</div>
-                </div>
-                <div class="overview-stat">
-                    <div class="overview-stat-value" id="totalDuration">0h</div>
-                    <div class="overview-stat-label">Total Duration</div>
-                </div>
-            </div>
-
-            <div class="mini-timeline">
-                <div class="mini-timeline-header">Timeline View</div>
-                <div class="mini-timeline-track" id="miniTimelineTrack">
-                    <!-- Segments added dynamically -->
-                </div>
-                <div class="mini-timeline-hours">
-                    <span>9am</span>
-                    <span>12pm</span>
-                    <span>3pm</span>
-                    <span>6pm</span>
-                    <span>9pm</span>
-                </div>
-                <div class="activity-legend" id="activityLegend">
-                    <!-- Legend items added dynamically -->
-                </div>
-            </div>
-
-            <div class="checkout-area">
-                <div class="checkout-row">
-                    <span class="checkout-label">Subtotal</span>
-                    <span class="checkout-value" id="subtotal">£0.00</span>
-                </div>
-                <div class="checkout-row">
-                    <span class="checkout-label">Booking fee</span>
-                    <span class="checkout-value">£0.00</span>
-                </div>
-                <div class="checkout-row total">
-                    <span class="checkout-label">Total</span>
-                    <span class="checkout-total" id="totalPrice">£0</span>
-                </div>
-                <button class="btn-checkout" id="checkoutBtn" disabled onclick="checkout()">
-                    Complete Booking
-                </button>
-            </div>
-        </div>
     </div>
 
-    <!-- Mobile Sidebar Backdrop -->
+    <!-- Sidebar Backdrop (for mobile) -->
     <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar (outside app-container for proper z-index on iOS) -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div>
+                <div class="sidebar-title">Day Summary</div>
+                <div class="sidebar-date" id="sidebarDate">Mon, Dec 23</div>
+            </div>
+            <button class="sidebar-close" onclick="toggleSidebar()">×</button>
+        </div>
+
+        <div class="day-overview">
+            <div class="overview-stat">
+                <div class="overview-stat-value" id="activityCount">0</div>
+                <div class="overview-stat-label">Activities</div>
+            </div>
+            <div class="overview-stat">
+                <div class="overview-stat-value" id="totalDuration">0h</div>
+                <div class="overview-stat-label">Total Duration</div>
+            </div>
+        </div>
+
+        <div class="mini-timeline">
+            <div class="mini-timeline-header">Timeline View</div>
+            <div class="mini-timeline-track" id="miniTimelineTrack">
+                <!-- Segments added dynamically -->
+            </div>
+            <div class="mini-timeline-hours">
+                <span>9am</span>
+                <span>12pm</span>
+                <span>3pm</span>
+                <span>6pm</span>
+                <span>9pm</span>
+            </div>
+            <div class="activity-legend" id="activityLegend">
+                <!-- Legend items added dynamically -->
+            </div>
+        </div>
+
+        <div class="checkout-area">
+            <div class="checkout-row">
+                <span class="checkout-label">Subtotal</span>
+                <span class="checkout-value" id="subtotal">£0.00</span>
+            </div>
+            <div class="checkout-row">
+                <span class="checkout-label">Booking fee</span>
+                <span class="checkout-value">£0.00</span>
+            </div>
+            <div class="checkout-row total">
+                <span class="checkout-label">Total</span>
+                <span class="checkout-total" id="totalPrice">£0</span>
+            </div>
+            <button class="btn-checkout" id="checkoutBtn" disabled onclick="checkout()">
+                Complete Booking
+            </button>
+        </div>
+    </div>
 
     <!-- Mobile Summary Toggle -->
     <button class="mobile-summary-toggle" onclick="toggleSidebar()">
